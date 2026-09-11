@@ -1,18 +1,21 @@
 //preview: python -m http.server
 
-let myBall;
 
 function setup() {
+  let allBalls = []
+  allBalls.push(new Ball(random(width),random(height),random(ballSize)))
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
-  myBall = new Ball(width / 2, height / 2, 40);
 }
 
 function draw() {
   background(30);
-  myBall.update();   // Calculate physics
-  myBall.checkKeys(); // Check for keyboard input
-  myBall.display();    // Draw the ball
+  for(let i = 0; i < allBalls.length; i++){
+    allBalls[i].update();   // Calculate physics
+    allBalls[i].checkKeys(); // Check for keyboard input
+    allBalls[i].display();    // Draw the ball
+    allBalls[i].checkEdges();
+  }
 }
 
 class Ball {
@@ -62,4 +65,17 @@ class Ball {
     noStroke();
     ellipse(this.pos.x, this.pos.y, this.r);
   }
+
+  checkEdges(){
+
+    if(Math.abs(this.pos.x) - this.r > width){
+      this.pos.x *= -1
+    }
+
+    if(Math.abs(this.pos.y) - this.r > height){
+      this.pos.y *= -1
+    }
+
+  }
 }
+
