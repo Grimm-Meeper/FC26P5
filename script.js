@@ -1,31 +1,47 @@
 //preview: python -m http.server
 
 
+var allBalls = []
+var allObstacles = []
+
 function setup() {
-  let allBalls = []
-  allBalls.push(new Ball(random(width),random(height),random(ballSize)))
+  for(let i = 0; i < 50; i ++){
+    allBalls.push(new Ball(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(0, 255), random(0, 255), random(0, 255)))
+  }
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
 }
 
 function draw() {
   background(30);
+  if (frameCount % 100 == 0) {
+    allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
+  }
   for(let i = 0; i < allBalls.length; i++){
     allBalls[i].update();   // Calculate physics
     allBalls[i].checkKeys(); // Check for keyboard input
     allBalls[i].display();    // Draw the ball
-    allBalls[i].checkEdges();
+    allBalls[i].checkEdges(); //wrap around
+  }
+  for(let i = 0; i < allObstacles.length; i++){
+    allObstacles[i].display()
+    allObstacles[i].x += 5
   }
 }
 
 class Ball {
-  constructor(x, y, r) {
+  constructor(x, y, r, red, green ,blue) {
     this.pos = createVector(x, y);
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
     this.r = r;
     this.topSpeed = 60;
     this.friction = 0.99; 
+    this.Red = red;
+    this.Green = green;
+    this.Blue = blue;
+    this.vel.y = random(-100, 100) * 10
+    this.vel.x = random(-100, 100) * 10
   }
 
   // Method to check keyboard input and apply forces
@@ -61,21 +77,34 @@ class Ball {
   }
 
   display() {
-    fill(255, 150, 0);
+    fill(this.Red, this.Green, this.Blue);
     noStroke();
     ellipse(this.pos.x, this.pos.y, this.r);
   }
 
   checkEdges(){
 
-    if(Math.abs(this.pos.x) - this.r > width){
-      this.pos.x *= -1
+    if(Math.abs(this.pos.x) - this.r > windowWidth-100){
+      this.vel.x *= -1;
     }
 
-    if(Math.abs(this.pos.y) - this.r > height){
-      this.pos.y *= -1
+    if(Math.abs(this.pos.y) - this.r > windowHeight-100){
+      this.vel.y *= -1;
     }
-
   }
 }
 
+class Obstacle {
+  constructor(x, y, W, H) {
+    this.x = x
+    this.y = y
+    this.width = W
+    this.height = H
+  }
+
+  display() {
+    fill("orange");
+    noStroke();
+    rect(this.x, this.y, this.width, this.height);
+  }
+}
