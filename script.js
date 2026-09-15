@@ -1,13 +1,11 @@
 //preview: python -m http.server
 
 
-var allBalls = []
+var ball = null
 var allObstacles = []
 
 function setup() {
-  for(let i = 0; i < 50; i ++){
-    allBalls.push(new Ball(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(0, 255), random(0, 255), random(0, 255)))
-  }
+  ball = new Ball()
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
 }
@@ -17,12 +15,12 @@ function draw() {
   if (frameCount % 100 == 0) {
     allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
   }
-  for(let i = 0; i < allBalls.length; i++){
-    allBalls[i].update();   // Calculate physics
-    allBalls[i].checkKeys(); // Check for keyboard input
-    allBalls[i].display();    // Draw the ball
-    allBalls[i].checkEdges(); //wrap around
-  }
+
+    ball.update();   // Calculate physics
+    ball.checkKeys(); // Check for keyboard input
+    ball.display();    // Draw the ball
+    ball.checkEdges(); //wrap around
+
   for(let i = 0; i < allObstacles.length; i++){
     allObstacles[i].display()
     allObstacles[i].x += allObstacles[i].Xvol
@@ -31,28 +29,27 @@ function draw() {
 }
 
 class Ball {
-  constructor(x, y, r, red, green ,blue) {
-    this.pos = createVector(x, y);
+  constructor() {
+    this.pos = createVector(600, 300);
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
-    this.r = r;
-    this.topSpeed = 60;
+    this.r = 50;
+    this.topSpeed = 20;
     this.friction = 0.99; 
-    this.Red = red;
-    this.Green = green;
-    this.Blue = blue;
-    this.vel.y = random(-100, 100) * 10
-    this.vel.x = random(-100, 100) * 10
+    this.Red = 255;
+    this.Green = 255;
+    this.Blue = 0;
+    this.vel.y = 0
+    this.vel.x = 0
   }
 
   // Method to check keyboard input and apply forces
   checkKeys() {
-    let forceMagnitude = 12;
+    let forceMagnitude = 2;
     
-    if (keyIsDown(LEFT_ARROW))  this.applyForce(createVector(-forceMagnitude, 0));
-    if (keyIsDown(RIGHT_ARROW)) this.applyForce(createVector(forceMagnitude, 0));
-    if (keyIsDown(UP_ARROW))    this.applyForce(createVector(0, -forceMagnitude));
-    if (keyIsDown(DOWN_ARROW))  this.applyForce(createVector(0, forceMagnitude));
+    if (keyIsDown(32)){
+      this.applyForce(createVector(0, -forceMagnitude));
+    }
   }
 
   // The "Force" pattern: Force adds to Acceleration
@@ -72,7 +69,10 @@ class Ball {
     
     // 4. Apply friction (velocity decay)
     this.vel.mult(this.friction);
-    
+
+    //4.5 go down
+    this.vel.add(0, 1)
+
     // 5. Reset acceleration for the next frame
     this.acc.mult(0);
   }
@@ -85,12 +85,14 @@ class Ball {
 
   checkEdges(){
 
-    if(Math.abs(this.pos.x) + this.r > width || Math.abs(this.pos.y) - 10 < 0){
-      this.vel.x *= -1;
+    if(Math.abs(this.pos.y) - 10 < 0){
+      this.vel.y = 0;
+      this.pos.y = 12;
     }
 
-    if(Math.abs(this.pos.y) + this.r > height || Math.abs(this.pos.y) - 10 < 0){
-      this.vel.y *= -1;
+    if(Math.abs(this.pos.y) + this.r > width){
+      //die
+      sojfaf
     }
   }
 }
@@ -106,7 +108,7 @@ class Obstacle {
   }
 
   display() {
-    fill("orange");
+    fill(100, 255, 100);
     noStroke();
     rect(this.x, this.y, this.width, this.height);
 
@@ -116,6 +118,11 @@ class Obstacle {
 
     if(Math.abs(this.y) + this.height > height || Math.abs(this.y) - 10 < 0){
       this.Yvol *= -1;
+    }
+
+    if((this.x <= 650 && this.x >= 550) && (this.y >= ball.pos.y - ball.r && this.y <= ball.pos.y + ball.r)){
+      //die
+      adfbbaskb
     }
   }
 }
