@@ -25,7 +25,8 @@ function draw() {
   }
   for(let i = 0; i < allObstacles.length; i++){
     allObstacles[i].display()
-    allObstacles[i].x += 5
+    allObstacles[i].x += allObstacles[i].Xvol
+    allObstacles[i].y += allObstacles[i].Yvol
   }
 }
 
@@ -84,11 +85,11 @@ class Ball {
 
   checkEdges(){
 
-    if(Math.abs(this.pos.x) - this.r > windowWidth-100){
+    if(Math.abs(this.pos.x) + this.r > width || Math.abs(this.pos.y) - 10 < 0){
       this.vel.x *= -1;
     }
 
-    if(Math.abs(this.pos.y) - this.r > windowHeight-100){
+    if(Math.abs(this.pos.y) + this.r > height || Math.abs(this.pos.y) - 10 < 0){
       this.vel.y *= -1;
     }
   }
@@ -100,11 +101,21 @@ class Obstacle {
     this.y = y
     this.width = W
     this.height = H
+    this.Xvol = random(-10, 10)
+    this.Yvol = random(-10, 10)
   }
 
   display() {
     fill("orange");
     noStroke();
     rect(this.x, this.y, this.width, this.height);
+
+    if(Math.abs(this.x) + this.width > width || Math.abs(this.x) - 10 < 0){
+      this.Xvol *= -1;
+    }
+
+    if(Math.abs(this.y) + this.height > height || Math.abs(this.y) - 10 < 0){
+      this.Yvol *= -1;
+    }
   }
 }
