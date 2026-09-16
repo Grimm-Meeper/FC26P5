@@ -3,34 +3,48 @@
 
 var ball = null
 var allObstacles = []
+var run = true
+var deathFrame = -1
 
 function setup() {
-  ball = new Ball()
+  ball = new Ball();
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
+  frameRate(60);
 }
 
 function draw() {
   background(30);
-  if (frameCount % 100 == 0) {
-    allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
-  }
+  if(run){
+    if (frameCount % 100 == 0) {
+      allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
+    }
 
-    ball.update();   // Calculate physics
-    ball.checkKeys(); // Check for keyboard input
-    ball.display();    // Draw the ball
-    ball.checkEdges(); //wrap around
+      ball.update();   // Calculate physics
+      ball.checkKeys(); // Check for keyboard input
+      ball.display();    // Draw the ball
+      if (ball.checkEdges() == "die"){ //die
+        endGame();
+      } 
 
-  for(let i = 0; i < allObstacles.length; i++){
-    allObstacles[i].display()
-    allObstacles[i].x += allObstacles[i].Xvol
-    allObstacles[i].y += allObstacles[i].Yvol
+    for(let i = 0; i < allObstacles.length; i++){
+      allObstacles[i].display()
+      allObstacles[i].x += allObstacles[i].Xvol
+      allObstacles[i].y += allObstacles[i].Yvol
+      if(allObstacles[i].checkDeath() == "die"){
+        endGame();
+      }
+    }
+  } else {
+    fill("red")
+    textSize(40)
+    text("Game Over. Seconds survived: " + roundTo(deathFrame / 60, 3), 600, 300)
   }
 }
 
 class Ball {
   constructor() {
-    this.pos = createVector(600, 300);
+    this.pos = createVector(600, (height * 3)/2);
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
     this.r = 50;
@@ -85,14 +99,12 @@ class Ball {
 
   checkEdges(){
 
-    if(Math.abs(this.pos.y) - 10 < 0){
-      this.vel.y = 0;
-      this.pos.y = 12;
+    if(Math.abs(this.pos.y) < 0){
+      return "die";
     }
 
-    if(Math.abs(this.pos.y) + this.r > width){
-      //die
-      sojfaf
+    if(Math.abs(this.pos.y) > height){
+      return "die";
     }
   }
 }
@@ -119,10 +131,33 @@ class Obstacle {
     if(Math.abs(this.y) + this.height > height || Math.abs(this.y) - 10 < 0){
       this.Yvol *= -1;
     }
-
-    if((this.x <= 650 && this.x >= 550) && (this.y >= ball.pos.y - ball.r && this.y <= ball.pos.y + ball.r)){
-      //die
-      adfbbaskb
+  }
+  checkDeath(){
+    if((this.x <= 625 && this.x >= 575) && (this.y >= ball.pos.y - ball.r && this.y <= ball.pos.y )){
+      return"die";
     }
   }
+}
+
+function endGame(){
+  run = false
+  deathFrame = frameCount
+}
+
+function roundTo(num, place){
+  let ans = -1
+  ans = num * (10 ** place)
+  ans = Math.floor(ans)
+  ans /= (10 ** place)
+  return ans
+}
+
+function mouseClicked() {
+  if(run){
+    return
+  }
+  allObstacles = []
+  ball.pos.y = 100
+  run = true
+  frameCount = 0
 }
