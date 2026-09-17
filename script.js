@@ -5,12 +5,15 @@ var ball = null
 var allObstacles = []
 var run = true
 var deathFrame = -1
+var UD = false
 
 function setup() {
   ball = new Ball();
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
   frameRate(60);
+  UD = floor(random(1, 13)) == 2
+  console.log(UD)
 }
 
 function draw() {
@@ -36,23 +39,34 @@ function draw() {
       }
     }
   } else {
-    fill("red")
+    if(!UD){
+      fill(255, 0, 0)
+    } else {
+      fill(0, 255, 255)
+    }
     textSize(40)
-    text("Game Over. Seconds survived: " + roundTo(deathFrame / 60, 3), 600, 300)
+    text("Game Over. Seconds survived: " + roundTo(deathFrame / 60, 2 ), 600, 300)
   }
 }
 
 class Ball {
   constructor() {
-    this.pos = createVector(600, (height * 3)/2);
+    if(!UD){
+      this.pos = createVector(600, 100);
+      this.Red = 255;
+      this.Green = 255;
+      this.Blue = 0;
+    } else {
+      this.pos = createVector(600, 500);
+      this.Red = 0;
+      this.Green = 0;
+      this.Blue = 255;
+    }
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
     this.r = 50;
     this.topSpeed = 20;
     this.friction = 0.99; 
-    this.Red = 255;
-    this.Green = 255;
-    this.Blue = 0;
     this.vel.y = 0
     this.vel.x = 0
   }
@@ -60,11 +74,14 @@ class Ball {
   // Method to check keyboard input and apply forces
   checkKeys() {
     let forceMagnitude = 2;
-    
-    if (keyIsDown(32)){
-      this.applyForce(createVector(0, -forceMagnitude));
+    if(UD){
+      forceMagnitude *= -1
     }
-  }
+
+    if (keyIsDown(32) || keyIsDown(UP_ARROW) || keyIsDown(87)){
+        this.applyForce(createVector(0, -forceMagnitude));
+      }
+    }
 
   // The "Force" pattern: Force adds to Acceleration
   applyForce(force) {
@@ -85,8 +102,11 @@ class Ball {
     this.vel.mult(this.friction);
 
     //4.5 go down
-    this.vel.add(0, 1)
-
+    if(UD){
+      this.vel.add(0, -1)
+    } else {
+      this.vel.add(0, 1)
+    }
     // 5. Reset acceleration for the next frame
     this.acc.mult(0);
   }
@@ -121,6 +141,9 @@ class Obstacle {
 
   display() {
     fill(100, 255, 100);
+    if(UD){
+      fill(155, 0, 155);
+    }
     noStroke();
     rect(this.x, this.y, this.width, this.height);
 
@@ -133,31 +156,32 @@ class Obstacle {
     }
   }
   checkDeath(){
-    if((this.x <= 625 && this.x >= 575) && (this.y >= ball.pos.y - ball.r && this.y <= ball.pos.y )){
+    if((this.x <= 625 && this.x >= 575) && (this.y >= ball.pos.y - ball.r && this.y <= ball.pos.y)){
       return"die";
     }
   }
 }
 
 function endGame(){
-  run = false
-  deathFrame = frameCount
+  run = false;
+  deathFrame = frameCount;
 }
 
 function roundTo(num, place){
-  let ans = -1
-  ans = num * (10 ** place)
-  ans = Math.floor(ans)
-  ans /= (10 ** place)
-  return ans
+  let ans = -1;
+  ans = num * (10 ** place);
+  ans = Math.floor(ans);
+  ans /= (10 ** place);
+  return ans;
 }
 
 function mouseClicked() {
   if(run){
-    return
+    return;
   }
-  allObstacles = []
-  ball.pos.y = 100
-  run = true
-  frameCount = 0
+  allObstacles = [];
+  ball = new Ball();
+  run = true;
+  frameCount = 0;
+  UD = floor(random(1, 13)) == 2;
 }
