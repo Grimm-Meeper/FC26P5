@@ -6,14 +6,14 @@ var allObstacles = []
 var run = true
 var deathFrame = -1
 var UD = false
-
+var highScore = 0
+var extra = ""
 function setup() {
   ball = new Ball();
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
   frameRate(60);
   UD = floor(random(1, 13)) == 2
-  console.log(UD)
 }
 
 function draw() {
@@ -31,11 +31,13 @@ function draw() {
       } 
 
     for(let i = 0; i < allObstacles.length; i++){
-      allObstacles[i].display()
-      allObstacles[i].x += allObstacles[i].Xvol
-      allObstacles[i].y += allObstacles[i].Yvol
-      if(allObstacles[i].checkDeath() == "die"){
-        endGame();
+      if(allObstacles[i] = null){
+        allObstacles[i].display()
+        allObstacles[i].x += allObstacles[i].Xvol
+        allObstacles[i].y += allObstacles[i].Yvol
+        if(allObstacles[i].checkDeath() == "die"){
+          endGame();
+        }
       }
     }
   } else {
@@ -45,7 +47,11 @@ function draw() {
       fill(0, 255, 255)
     }
     textSize(40)
-    text("Game Over. Seconds survived: " + roundTo(deathFrame / 60, 2 ), 600, 300)
+    if (roundTo(deathFrame / 60, 2 ) > highScore){
+      highScore = roundTo(deathFrame / 60, 2 )
+      extra = "\nNew High Score!"
+    }
+    text("Game Over.\nSeconds survived: " + roundTo(deathFrame / 60, 2 ) + "\nHigh score: " + highScore + extra, 600, 300)
   }
 }
 
@@ -137,6 +143,8 @@ class Obstacle {
     this.height = H
     this.Xvol = random(-10, 10)
     this.Yvol = random(-10, 10)
+    //this.startFrame = frameCount
+    //this.arrayPart = allObstacles.length - 1
   }
 
   display() {
@@ -154,6 +162,9 @@ class Obstacle {
     if(Math.abs(this.y) + this.height > height || Math.abs(this.y) - 10 < 0){
       this.Yvol *= -1;
     }
+    //if(frameCount - this.startFrame >= 3600){
+    //  allObstacles[this.arrayPart] = null
+    //}
   }
   checkDeath(){
     if((this.x <= 625 && this.x >= 575) && (this.y >= ball.pos.y - ball.r && this.y <= ball.pos.y)){
@@ -184,4 +195,5 @@ function mouseClicked() {
   ball = new Ball();
   run = true;
   frameCount = 0;
+  extra = ""
 }
