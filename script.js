@@ -57,7 +57,7 @@ class Ball {
       this.Green = 255;
       this.Blue = 0;
     } else {
-      this.pos = createVector(600, 500);
+      this.pos = createVector(600, 800);
       this.Red = 0;
       this.Green = 0;
       this.Blue = 255;
@@ -119,7 +119,7 @@ class Ball {
 
   checkEdges(){
 
-    if(Math.abs(this.pos.y) < 0){
+    if(Math.abs(this.pos.y) - 10 < 0){
       return "die";
     }
 
@@ -180,8 +180,8 @@ function mouseClicked() {
     return;
   }
   allObstacles = [];
+  UD = floor(random(1, 13)) == 2;
   ball = new Ball();
   run = true;
   frameCount = 0;
-  UD = floor(random(1, 13)) == 2;
 }
