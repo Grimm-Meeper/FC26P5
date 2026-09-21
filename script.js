@@ -9,6 +9,7 @@ var UD = false
 var highScore = 0
 var extra = ""
 function setup() {
+  frameRate(60)
   ball = new Ball();
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
@@ -19,10 +20,9 @@ function setup() {
 function draw() {
   background(30);
   if(run){
-    if (frameCount % 100 == 0) {
+    if (frameCount == 100) {
       allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
     }
-
       ball.update();   // Calculate physics
       ball.checkKeys(); // Check for keyboard input
       ball.display();    // Draw the ball
@@ -31,15 +31,18 @@ function draw() {
       } 
 
     for(let i = 0; i < allObstacles.length; i++){
-      if(allObstacles[i] = null){
+      if(allObstacles[i] != "0"){
         allObstacles[i].display()
-        allObstacles[i].x += allObstacles[i].Xvol
-        allObstacles[i].y += allObstacles[i].Yvol
-        if(allObstacles[i].checkDeath() == "die"){
-          endGame();
+        if(allObstacles[i] != "0"){
+          allObstacles[i].x += allObstacles[i].Xvol
+          allObstacles[i].y += allObstacles[i].Yvol
+          if(allObstacles[i].checkDeath() == "die"){
+            endGame();
+          }
         }
       }
     }
+
   } else {
     if(!UD){
       fill(255, 0, 0)
@@ -143,8 +146,8 @@ class Obstacle {
     this.height = H
     this.Xvol = random(-10, 10)
     this.Yvol = random(-10, 10)
-    //this.startFrame = frameCount
-    //this.arrayPart = allObstacles.length - 1
+    this.startFrame = frameCount
+    this.arrayPart = allObstacles.length
   }
 
   display() {
@@ -162,9 +165,12 @@ class Obstacle {
     if(Math.abs(this.y) + this.height > height || Math.abs(this.y) - 10 < 0){
       this.Yvol *= -1;
     }
-    //if(frameCount - this.startFrame >= 3600){
-    //  allObstacles[this.arrayPart] = null
-    //}
+    if(frameCount - this.startFrame == 360){
+      allObstacles[this.arrayPart] = "0"
+
+      allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
+      allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
+    }
   }
   checkDeath(){
     if((this.x <= 625 && this.x >= 575) && (this.y >= ball.pos.y - ball.r && this.y <= ball.pos.y)){
