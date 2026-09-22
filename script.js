@@ -9,7 +9,7 @@ var UD = false
 var highScore = 0
 var extra = ""
 var obsticalCount = 0
-
+var setter = "ur mom gottem"
 function setup() {
   frameRate(60)
   UD = floor(random(1, 12)) == 2
@@ -54,13 +54,16 @@ function draw() {
     }
     textSize(40)
     if (roundTo(deathFrame / 60, 2 ) > highScore){
+      if(extra != "\nNew High Score!"){
+        setter = readLine("What is your name?")
+      }
       highScore = roundTo(deathFrame / 60, 2 )
       extra = "\nNew High Score!"
     }
     if(UD){
       obsticalCount = Math.abs(obsticalCount) * -1
     }
-    text("Game Over.\nSeconds survived: " + roundTo(deathFrame / 60, 2 ) + "\nNumber of obstacles: " + obsticalCount + "\nHigh score: " + highScore + extra, 600, 300)
+    text("Game Over.\nSeconds survived: " + roundTo(deathFrame / 60, 2 ) + "\nNumber of obstacles: " + obsticalCount + "\nHigh score: " + highScore + "/nSet by:" + setter + extra, 600, 300)
   }
 }
 
