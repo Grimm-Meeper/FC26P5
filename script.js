@@ -8,13 +8,15 @@ var deathFrame = -1
 var UD = false
 var highScore = 0
 var extra = ""
+var obsticalCount = 0
+
 function setup() {
   frameRate(60)
+  UD = floor(random(1, 12)) == 2
   ball = new Ball();
   createCanvas(windowWidth-100, windowHeight-100);
   background(30);
   frameRate(60);
-  UD = floor(random(1, 13)) == 2
 }
 
 function draw() {
@@ -22,6 +24,7 @@ function draw() {
   if(run){
     if (frameCount == 100) {
       allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
+      obsticalCount = 1
     }
       ball.update();   // Calculate physics
       ball.checkKeys(); // Check for keyboard input
@@ -54,7 +57,10 @@ function draw() {
       highScore = roundTo(deathFrame / 60, 2 )
       extra = "\nNew High Score!"
     }
-    text("Game Over.\nSeconds survived: " + roundTo(deathFrame / 60, 2 ) + "\nHigh score: " + highScore + extra, 600, 300)
+    if(UD){
+      obsticalCount = Math.abs(obsticalCount) * -1
+    }
+    text("Game Over.\nSeconds survived: " + roundTo(deathFrame / 60, 2 ) + "\nNumber of obstacles: " + obsticalCount + "\nHigh score: " + highScore + extra, 600, 300)
   }
 }
 
@@ -170,6 +176,7 @@ class Obstacle {
 
       allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
       allObstacles.push(new Obstacle(random(1, windowWidth-100), random(1, windowHeight-100), random(10, 100), random(10, 100)))
+      obsticalCount += 1
     }
   }
   checkDeath(){
@@ -197,7 +204,7 @@ function mouseClicked() {
     return;
   }
   allObstacles = [];
-  UD = floor(random(1, 13)) == 2;
+  UD = floor(random(1, 12)) == 2;
   ball = new Ball();
   run = true;
   frameCount = 0;
