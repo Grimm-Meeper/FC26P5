@@ -10,6 +10,8 @@ function setup() {
   createCanvas(windowWidth - 100, windowHeight - 100); // before reset(): Ball needs width/height
   frameRate(60);
   reset();
+  setter = localStorage.getItem("setter")
+  highScore = localStorage.getItem("score")
 }
 
 function reset() {
@@ -67,6 +69,8 @@ function endGame() {
       }
       if(temp != ""){
         setter = temp;
+        localStorage.setItem("setter", temp)
+        localStorage.setItem("score", score)
       }
     }
   }
