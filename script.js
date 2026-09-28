@@ -13,7 +13,7 @@ function setup() {
 }
 
 function reset() {
-  UD = floor(random(1, 11)) == 2;
+  UD = floor(random(1, 12)) == 2;
   ball = new Ball();
   obstacles = [];
   startFrame = frameCount; // p5 owns frameCount; assigning it doesn't reset it
@@ -26,7 +26,7 @@ function elapsed() {
 }
 
 function draw() {
-  background(30);
+  background(UD? "#DFDFDF" :"#202020");
   if (!running) return drawGameOver();
 
   if (elapsed() == FIRST_SPAWN) spawn();
@@ -148,6 +148,9 @@ class Obstacle {
 
   display() {
     fill(UD ? color(155, 0, 155) : color(100, 255, 100));
+    if(frameCount - this.born >= OBSTACLE_LIFE - 60 && frameCount % 3 == 0){
+      fill(UD ? color(255, 255, 255) : color(0, 0, 0))
+    }
     noStroke();
     rect(this.x, this.y, this.w, this.h);
   }
