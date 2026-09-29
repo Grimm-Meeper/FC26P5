@@ -2,7 +2,6 @@
 //making all the variables exist, even if unset
 const FIRST_SPAWN = 100;
 const OBSTACLE_LIFE = 360;
-//mak
 let ball, obstacles, UD, startFrame, running, score, obstacleCount;
 let highScore = 0, setter = "ur mom gottem", newHigh = false;
 //runs once
@@ -93,6 +92,8 @@ function mouseClicked() {
 function keyPressed() {
   if (keyCode === 13 && !running) {
     reset();
+  } else if(keyCode === 70){
+    localStorage.setItem("setter", "Fenton")
   }
 }
 
@@ -103,7 +104,7 @@ class Ball {
     this.pos = createVector(width / 2, UD ? height - 100 : 100);
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
-    this.r = 25; // radius; p5's ellipse() takes a diameter
+    this.r = 25;
     this.gravity = UD ? -1 : 1;
     this.color = UD ? color(0, 0, 255) : color(255, 255, 0);
   }
